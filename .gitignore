@@ -1,48 +1,35 @@
-```
-# Dependency directories
-vendor/
-node_modules/
+```gitignore
+# Compiled Python files
+*.pyc
+__pycache__/
 
-# Laravel/Lumen specific
-bootstrap/cache/
-storage/framework/cache/data/
-storage/framework/sessions/
-storage/framework/views/
-storage/logs/
-database/seeds/
-database/factories/
-
-# Environment specific
-.env
-.env.local
-.env.*
-
-# IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# OS generated files
-.DS_Store
-Thumbs.db
+# Virtual environments
+venv/
+.venv/
+env/
 
 # Logs
 *.log
 
-# Compiled files
-*.php~
-*.js~
-*.css~
+# Temporary files
+*.tmp
+*.swp
+*.swo
+
+# Environment files
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
 
 # Build artifacts
-public/css/filament/
-public/js/filament/
-public/build/
+build/
+dist/
+*.egg-info/
 
-# Composer
-composer.phar
-
-# Testing
-.phpunit.result.cache
+# Dependencies
+node_modules/
 ```
