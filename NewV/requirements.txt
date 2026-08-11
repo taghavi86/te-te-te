@@ -1,0 +1,37 @@
+# Advanced Tennis AI Coach - Requirements
+
+# Core ML/DL Libraries
+torch>=2.0.0
+torchvision>=0.15.0
+ultralytics>=8.0.0  # YOLOv8
+mediapipe>=0.10.0  # Pose estimation
+
+# Computer Vision
+opencv-python>=4.8.0
+opencv-contrib-python>=4.8.0
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Streamlit Dashboard
+streamlit>=1.28.0
+plotly>=5.17.0
+
+# Video Processing
+av>=10.0.0
+imageio>=2.31.0
+
+# Utilities
+pyyaml>=6.0
+python-dateutil>=2.8.0
+tqdm>=4.65.0
+
+# Optional: For advanced sequence comparison
+fastdtw>=0.3.4
+
+# Development
+pytest>=7.4.0
+black>=23.0.0
+flake8>=6.1.0

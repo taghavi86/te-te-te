@@ -1,0 +1,31 @@
+# Advanced Tennis AI Coach - Configuration
+
+# Model Settings
+YOLO_MODEL: "yolov8x.pt"  # Largest YOLOv8 model for maximum accuracy
+POSE_MODEL: "blazepose_full"  # Full body pose estimation
+BALL_MODEL: "custom_ball_detector.pt"  # Custom trained ball detector
+
+# Detection Thresholds
+CONFIDENCE_THRESHOLD: 0.75
+IOU_THRESHOLD: 0.45
+BALL_TRACKING_HISTORY: 30  # Frames to track ball trajectory
+
+# Analysis Settings
+FRAME_RATE: 60
+RESOLUTION: (1920, 1080)
+KEYPOINTS_CONFIDENCE: 0.8
+ANGLE_SMOOTHING_WINDOW: 5  # Frames for smoothing angle calculations
+
+# Professional Comparison
+PRO_REFERENCE_DB: "data/pro_players/"
+SIMILARITY_METRIC: "dtw"  # Dynamic Time Warping for sequence comparison
+
+# UI Settings
+DASHBOARD_THEME: "dark"
+CHART_UPDATE_INTERVAL: 0.1  # seconds
+HEATMAP_RESOLUTION: (64, 64)
+
+# Performance
+GPU_ACCELERATION: true
+BATCH_SIZE: 4
+MAX_QUEUE_SIZE: 100
