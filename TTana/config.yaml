@@ -1,0 +1,142 @@
+# TTana Configuration File
+
+# Pose Estimation Settings
+pose:
+  model_type: "rtmpose"
+  confidence_threshold: 0.5
+  kp_threshold: 0.3
+  model_path: "models/rtmpose.pth"
+  config_path: "models/rtmpose_config.py"
+
+# Person Detection Settings
+detection:
+  model_type: "rtmdet"
+  confidence_threshold: 0.5
+  nms_threshold: 0.45
+  model_path: "models/rtmdet.pth"
+  max_persons: 5
+
+# Tracking Settings
+tracking:
+  method: "bytetrack"
+  track_buffer: 30
+  match_threshold: 0.8
+  confidence_threshold: 0.5
+
+# Temporal Smoothing Settings
+smoothing:
+  enabled: true
+  method: "savitzky_golay"  # Options: savitzky_golay, ema, kalman
+  window_length: 7  # Must be odd number
+  polyorder: 2
+
+# Analysis Settings
+analysis:
+  fps: 30
+  min_stroke_frames: 15
+  max_stroke_frames: 120
+  motion_energy_threshold: 0.6
+  velocity_peak_threshold: 0.7
+
+# DTW (Dynamic Time Warping) Settings
+dtw:
+  enabled: true
+  window_size: 20
+  use_multivariate: true
+  normalize: true
+  
+  # Feature weights for DTW
+  feature_weights:
+    elbow_angle: 1.3
+    shoulder_angle: 1.5
+    hip_rotation: 1.4
+    wrist_angle: 1.0
+    knee_angle: 0.9
+    trunk_angle: 1.2
+    wrist_velocity: 1.1
+    elbow_velocity: 1.0
+    shoulder_velocity: 1.3
+
+# Biomechanics Settings
+biomechanics:
+  coordinate_system: "body_relative"  # Options: image, normalized, body_relative
+  scale_reference: "shoulder_width"  # Options: shoulder_width, torso_length
+  handedness: "auto"  # Options: auto, right, left
+
+# Stroke Phase Settings
+phases:
+  detection_method: "rule_based"  # Options: rule_based, ml
+  phases:
+    - preparation
+    - backswing
+    - acceleration
+    - contact_proxy
+    - follow_through
+    - recovery
+
+# LLM Settings (LM Studio)
+llm:
+  enabled: true
+  endpoint: "http://localhost:1234/v1"
+  model: "qwen3.5-9b"
+  temperature: 0.2
+  max_tokens: 4096
+  timeout: 120
+  retry_attempts: 3
+  streaming: true
+  
+  # Context settings
+  context:
+    max_messages: 10
+    include_evidence: true
+    retrieval_enabled: true
+
+# GPU Settings
+gpu:
+  use_cuda: true
+  device: "cuda:0"
+  allow_tf32: true
+  benchmark: true
+
+# Cache Settings
+cache:
+  enabled: true
+  directory: "cache"
+  use_video_hash: true
+  hash_algorithm: "sha256"
+
+# Database Settings
+database:
+  type: "sqlite"
+  path: "sessions/ttana.db"
+  backup_enabled: true
+
+# Video Processing Settings
+video:
+  ffmpeg_path: ""  # Leave empty for system default
+  output_format: "mp4"
+  codec: "h264"
+  crf: 23
+  preset: "medium"
+
+# UI Settings
+ui:
+  theme: "dark"  # Options: dark, light
+  language: "en"  # Options: en, fa
+  show_fps: true
+  auto_save: true
+  screenshot_format: "png"
+
+# Logging Settings
+logging:
+  level: "INFO"  # Options: DEBUG, INFO, WARNING, ERROR, CRITICAL
+  file: "logs/ttana.log"
+  max_size_mb: 10
+  backup_count: 5
+  console_output: true
+
+# Security & Privacy
+security:
+  offline_mode: true
+  telemetry_enabled: false
+  send_analytics: false
