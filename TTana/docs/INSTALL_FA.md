@@ -1,307 +1,429 @@
 # راهنمای نصب و راه‌اندازی TTana
 
-## پیش‌نیازهای سیستم
-
-### حداقل مشخصات سخت‌افزاری
-- **سیستم عامل:** ویندوز ۱۰/۱۱ (۶۴ بیت)
-- **پردازنده:** Intel Core i5 یا معادل AMD
-- **حافظه رم:** ۱۶ گیگابایت (۳۲ گیگابایت توصیه می‌شود)
-- **کارت گرافیک:** NVIDIA با پشتیبانی از CUDA (حداقل ۶ گیگابایت VRAM)
-- **فضای ذخیره‌سازی:** ۱۰ گیگابایت فضای خالی
-
-### نرم‌افزارهای مورد نیاز
-
-1. **Python 3.11 یا بالاتر**
-   - دانلود از: https://www.python.org/downloads/
-   - هنگام نصب گزینه "Add Python to PATH" را فعال کنید
-
-2. **CUDA Toolkit** (برای شتاب GPU)
-   - نسخه پیشنهادی: ۱۱.۸ یا ۱۲.x
-   - دانلود از: https://developer.nvidia.com/cuda-toolkit-archive
-
-3. **FFmpeg**
-   - دانلود از: https://ffmpeg.org/download.html
-   - به PATH سیستم اضافه کنید
-
-4. **LM Studio** (برای اجرای مدل زبانی محلی)
-   - دانلود از: https://lmstudio.ai/
-   - مدل Qwen3.5-9B را دانلود و نصب کنید
-   - سرور محلی را فعال کنید (پیش‌فرض: http://localhost:1234)
+## AI Table Tennis Coach - مربی هوشمند تنیس روی میز
 
 ---
 
-## مراحل نصب
+## 📋 فهرست مطالب
 
-### مرحله ۱: ورود به پوشه پروژه
+1. [پیش‌نیازهای سخت‌افزاری](#پیش‌نیازهای-سخت‌افزاری)
+2. [پیش‌نیازهای نرم‌افزاری](#پیش‌نیازهای-نرم‌افزاری)
+3. [مراحل نصب گام‌به‌گام](#مراحل-نصب-گام‌به‌گام)
+4. [پیکربندی LM Studio و Qwen](#پیکربندی-lm-studio-و-qwen)
+5. [اجرای برنامه](#اجرای-برنامه)
+6. [گردش کار تحلیل](#گردش-کار-تحلیل)
+7. [عیب‌یابی](#عیب‌یابی)
+
+---
+
+## پیش‌نیازهای سخت‌افزاری
+
+### حداقل مشخصات سیستم
+
+| کامپوننت | حداقل | پیشنهادی |
+|----------|-------|----------|
+| **سیستم‌عامل** | Windows 10 (64-bit) | Windows 11 (64-bit) |
+| **پردازنده** | Intel i5-8400 / AMD Ryzen 5 2600 | Intel i7-10700K / AMD Ryzen 7 5800X |
+| **حافظه RAM** | 16 GB | 32 GB |
+| **کارت گرافیک** | NVIDIA RTX 2060 Super (8GB) | NVIDIA RTX 3080 (10GB+) |
+| **فضای ذخیره‌سازی** | 50 GB SSD | 100 GB NVMe SSD |
+| **VRAM** | 8 GB | 12+ GB |
+
+### نکات مهم GPU
+
+- **فقط NVIDIA**: سیستم از CUDA استفاده می‌کند
+- **حداقل VRAM**: 8 گیگابایت برای اجرای همزمان Pose Model و LLM
+- **CUDA Support**: نسخه CUDA 11.8 یا 12.x
+
+---
+
+## پیش‌نیازهای نرم‌افزاری
+
+### 1. Python 3.11+
 
 ```bash
+# دانلود از python.org
+https://www.python.org/downloads/
+
+# بررسی نسخه
+python --version
+# باید باشد: Python 3.11.x یا بالاتر
+```
+
+### 2. CUDA Toolkit
+
+```bash
+# دانلود CUDA Toolkit 11.8
+https://developer.nvidia.com/cuda-11-8-0-download-archive
+
+# یا CUDA 12.x
+https://developer.nvidia.com/cuda-downloads
+
+# بررسی نصب
+nvcc --version
+nvidia-smi
+```
+
+### 3. FFmpeg
+
+```bash
+# دانلود از ffmpeg.org
+https://ffmpeg.org/download.html
+
+# یا با Chocolatey (Windows)
+choco install ffmpeg
+
+# بررسی نصب
+ffmpeg -version
+```
+
+### 4. Git (اختیاری)
+
+```bash
+# دانلود از git-scm.com
+https://git-scm.com/download/win
+```
+
+---
+
+## مراحل نصب گام‌به‌گام
+
+### مرحله ۱: آماده‌سازی محیط
+
+```bash
+# رفتن به پوشه پروژه
 cd TTana
-```
 
-### مرحله ۲: ساخت محیط مجازی
-
-```bash
+# ساخت محیط مجازی
 python -m venv venv
-```
 
-### مرحله ۳: فعال‌سازی محیط مجازی
-
-**ویندوز:**
-```bash
+# فعال‌سازی محیط مجازی
+# در Windows:
 venv\Scripts\activate
-```
 
-**لینوکس/مک:**
-```bash
+# در Linux/Mac:
 source venv/bin/activate
 ```
 
-### مرحله ۴: نصب وابستگی‌ها
+### مرحله ۲: نصب PyTorch با CUDA
 
 ```bash
+# برای CUDA 11.8
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
+# برای CUDA 12.x
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# بررسی نصب PyTorch با CUDA
+python -c "import torch; print(torch.cuda.is_available())"
+# باید چاپ کند: True
+```
+
+### مرحله ۳: نصب MMCV و MMPose
+
+```bash
+# نصب MMEngine
+pip install mmengine
+
+# نصب MMCV با نسخه سازگار
+pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.1/index.html
+
+# برای CUDA 12.x
+# pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu121/torch2.1/index.html
+
+# نصب MMPose
+pip install mmpose>=1.0.0
+
+# نصب RTMPose pre-trained models
+mim download mmpose --config rtmpose-m_8xb32-210e_coco-256x192 --dest .
+```
+
+### مرحله ۴: نصب سایر وابستگی‌ها
+
+```bash
+# نصب تمام dependencies
 pip install -r requirements.txt
 ```
 
-### مرحله ۵: نصب MMPose (نصب ویژه)
-
-MMPose نیاز به نصب خاص دارد:
+### مرحله ۵: بررسی نصب
 
 ```bash
-# نصب MMCV
-pip install mmcv-full -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.0/index.html
+# اجرای تست سلامت
+python tests/test_installation.py
 
-# نصب MMPose
-pip install mmpose
+# باید تمام تست‌ها Pass شوند
 ```
-
-### مرحله ۶: دانلود مدل‌ها
-
-مدل‌ها در اولین اجرا به صورت خودکار دانلود می‌شوند، یا می‌توانید دستی آن‌ها را در پوشه `models/` قرار دهید:
-
-- RTMPose model weights
-- RTMDet model weights
 
 ---
 
-## پیکربندی
+## پیکربندی LM Studio و Qwen
 
-فایل `config.yaml` را برای تنظیمات سفارشی ویرایش کنید:
+### مرحله ۱: نصب LM Studio
 
-```yaml
-# آستانه اطمینان تشخیص Pose
-pose:
-  confidence_threshold: 0.5
+1. دانلود از سایت رسمی:
+   ```
+   https://lmstudio.ai/
+   ```
 
-# تنظیمات LLM
-llm:
-  endpoint: "http://localhost:1234/v1"
-  model: "qwen3.5-9b"
-  temperature: 0.2
-  max_tokens: 4096
+2. نصب و اجرای LM Studio
 
-# تنظیمات GPU
-gpu:
-  use_cuda: true
-  device: "cuda:0"
+### مرحله ۲: دانلود مدل Qwen3.5-9B
+
+1. باز کردن LM Studio
+2. رفتن به تب **"Discover"** یا **"Search"**
+3. جستجوی `Qwen3.5-9B` یا `Qwen2.5-7B` (نسخه سبک‌تر)
+4. انتخاب نسخه Quantized مناسب:
+   - **Q4_K_M**: تعادل خوب بین کیفیت و سرعت (توصیه شده)
+   - **Q5_K_M**: کیفیت بالاتر، مصرف VRAM بیشتر
+   - **Q3_K_S**: سبک‌ترین، کیفیت پایین‌تر
+
+5. کلیک روی **Download**
+
+### مرحله ۳: راه‌اندازی Local Server
+
+1. رفتن به تب **"Local Server"** در LM Studio
+2. انتخاب مدل دانلود شده از منوی کشویی
+3. تنظیمات پیشنهادی:
+   ```
+   Context Length: 4096
+   GPU Offload: Max (تمام لایه‌ها روی GPU)
+   ```
+4. کلیک روی **"Start Server"**
+5. بررسی آدرس سرور (پیش‌فرض: `http://localhost:1234`)
+
+### مرحله ۴: تست اتصال
+
+```bash
+# با curl
+curl http://localhost:1234/v1/models
+
+# باید لیست مدل‌ها را برگرداند
 ```
 
 ---
 
 ## اجرای برنامه
 
-### شروع LM Studio
-
-1. LM Studio را باز کنید
-2. مدل Qwen3.5-9B را بارگذاری کنید
-3. به تب "Local Server" بروید
-4. روی "Start Server" کلیک کنید
-5. مطمئن شوید سرور روی `http://localhost:1234` اجرا می‌شود
-
-### اجرای TTana
+### روش ۱: اجرای مستقیم
 
 ```bash
+# فعال‌سازی محیط مجازی
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Linux/Mac
+
+# اجرای برنامه
 python app/main.py
 ```
 
-یا اگر در ویندوز هستید و فایل اجرایی ساخته‌اید:
+### روش ۲: ساخت فایل اجرایی (اختیاری)
 
 ```bash
-TTana.exe
+# نصب PyInstaller
+pip install pyinstaller
+
+# ساخت executable
+pyinstaller --onefile --windowed --name=TTana app/main.py
+
+# فایل اجرایی در dist/TTana.exe ساخته می‌شود
 ```
+
+### روش ۳: ایجاد میانبر
+
+1. کلیک راست روی دسکتاپ → New → Shortcut
+2. مسیر را وارد کنید:
+   ```
+   C:\path\to\TTana\venv\Scripts\python.exe C:\path\to\TTana\app\main.py
+   ```
+3. نام را `TTana Coach` بگذارید
 
 ---
 
 ## گردش کار تحلیل
 
-### ۱. بارگذاری ویدئوها
+### ۱. شروع جلسه جدید
 
-- روی "Select User Video" کلیک کنید و ویدئوی خود را انتخاب کنید
-- روی "Select Reference Video" کلیک کنید و ویدئوی حرفه‌ای را انتخاب کنید
+1. اجرای برنامه TTana
+2. کلیک روی **"New Session"**
+3. وارد کردن نام بازیکن (اختیاری)
 
-### ۲. شروع تحلیل
+### ۲. بارگذاری ویدئوها
 
-- روی دکمه "Start Analysis" کلیک کنید
-- منتظر تکمیل مراحل باشید:
-  - декоد کردن ویدئو
-  - تشخیص شخص
-  - تخمین Pose
-  - رهگیری و هموارسازی
-  - تشخیص ضربات
-  - استخراج ویژگی‌های بیومکانیکی
-  - مقایسه با DTW
-  - تولید گزارش مربی
+#### ویدئوی کاربر:
+- کلیک روی **"Select User Video"**
+- انتخاب فایل ویدئویی از سیستم
+- فرمت‌های پشتیبانی شده: MP4, AVI, MOV, MKV
 
-### ۳. مشاهده نتایج
+#### ویدئوی مرجع:
+- کلیک روی **"Select Reference Video"**
+- انتخاب ویدئوی بازیکن حرفه‌ای
+- می‌تواند از مسابقات جهانی یا آموزش‌های معتبر باشد
 
-- **Dashboard:** نمای کلی تحلیل
-- **Video Comparison:** مقایسه_side-by-side با skeleton overlay
-- **Biomechanics:** زوایای مفاصل، سرعت‌ها، داده‌های زمانی
-- **Coach Report:** گزارش تولید شده توسط هوش مصنوعی
+### ۳. تنظیمات تحلیل
 
-### ۴. گفتگو با مربی AI
+- **Handedness**: راست‌دست / چپ‌دست / خودکار
+- **Confidence Threshold**: حداقل اطمینان تشخیص (پیش‌فرض: 0.5)
+- **Stroke Types**: انواع ضربات برای تحلیل
 
-- سوالات خود را درباره تکنیک بپرسید
-- مثال‌ها:
-  - "مشکل بک‌سوینگ من چیست؟"
-  - "چگونه می‌توانم timing را بهبود دهم؟"
-  - "قوی‌ترین ضربه من کدام است؟"
-- برای مشاهده بخش‌های مرتبط ویدئو روی "View Evidence" کلیک کنید
+### ۴. اجرای تحلیل
+
+1. کلیک روی **"Start Analysis"**
+2. مشاهده پیشرفت مراحل:
+   - ✅ Decode Video
+   - ✅ Person Detection
+   - ✅ Pose Estimation
+   - ✅ Tracking & Smoothing
+   - ✅ Stroke Detection
+   - ✅ Feature Extraction
+   - ✅ DTW Alignment
+   - ✅ Comparison & Diagnosis
+   - ✅ LLM Report Generation
+
+3. زمان تقریبی: ۲-۵ دقیقه بسته به طول ویدئو
+
+### ۵. مشاهده نتایج
+
+#### Dashboard:
+- نمای کلی جلسه
+- آمار ضربات
+- امتیاز شباهت کلی
+
+#### Video Comparison:
+- پخش همزمان دو ویدئو
+- Overlay اسکلت بدن
+- نمایش تفاوت‌ها با بردارها
+
+#### Biomechanics Panel:
+- نمودار زوایای مفاصل
+- سرعت‌ها و شتاب‌ها
+- مقایسه Side-by-Side
+
+#### Coach Report:
+- مسئله اصلی
+- علت ریشه‌ای
+- شواهد ویدئویی
+- مسائل ثانویه
+- نقاط قوت
+- توصیه‌های اصلاحی
+- برنامه تمرینی
+
+#### AI Chat:
+- پرسش سوالات درباره تکنیک
+- دریافت پاسخ مبتنی بر داده
+- درخواست مثال‌های ویدئویی
+
+### ۶. ذخیره و خروج
+
+- گزارش PDF (اختیاری)
+- ذخیره جلسه در پایگاه داده
+- خروج از برنامه
 
 ---
 
 ## عیب‌یابی
 
-### مشکل: خطای CUDA out of memory
-
-**راه‌حل:**
-- batch size را در config کاهش دهید
-- سایر برنامه‌های GPU را ببندید
-- از مدل‌های کوچکتر استفاده کنید
-
-### مشکل: اتصال به LM Studio برقرار نمی‌شود
-
-**راه‌حل:**
-- مطمئن شوید سرور LM Studio در حال اجراست
-- URL endpoint را در config بررسی کنید
-- تنظیمات فایروال را بررسی کنید
-
-### مشکل: شخصی تشخیص داده نشد
-
-**راه‌حل:**
-- از نورپردازی مناسب اطمینان حاصل کنید
-- از ویدئوهایی با دید واضح بازیکن استفاده کنید
-- آستانه اطمینان را در config تنظیم کنید
-
-### مشکل: عملکرد کند
-
-**راه‌حل:**
-- شتاب GPU را فعال کنید
-- رزولوشن ویدئو را کاهش دهید
-- از نتایج cache شده استفاده کنید
-
----
-
-## ساختار پروژه
-
-```
-TTana/
-│
-├── app/                      # کد اصلی برنامه
-│   ├── main.py               # نقطه ورود
-│   ├── core/                 # هسته اصلی
-│   ├── vision/               # بینایی کامپیوتر
-│   ├── biomechanics/         # تحلیل بیومکانیک
-│   ├── strokes/              # تشخیص ضربات
-│   ├── alignment/            # هم‌ترازی DTW
-│   ├── diagnosis/            # موتور تشخیص
-│   ├── llm/                  # یکپارچه‌سازی LLM
-│   ├── database/             # پایگاه داده
-│   └── ui/                   # رابط کاربری PyQt6
-│
-├── models/                   # وزن‌های مدل
-├── cache/                    # نتایج cache شده
-├── sessions/                 # داده‌های session
-├── tests/                    # تست‌ها
-├── docs/                     # مستندات
-├── config.yaml               # فایل پیکربندی
-├── requirements.txt          # وابستگی‌های Python
-└── README.md                 # این فایل
-```
-
----
-
-## نکات مهم
-
-### حریم خصوصی و امنیت
-
-- **تمام پردازش‌ها محلی انجام می‌شود**
-- پس از نصب اولیه، نیازی به اینترنت نیست
-- هیچ داده‌ای به سرویس‌های خارجی ارسال نمی‌شود
-- ویدئوها روی دستگاه شما باقی می‌مانند
-- LLM به صورت محلی از طریق LM Studio اجرا می‌شود
-
-### caching
-
-نتایج تحلیل بر اساس hash ویدئو (SHA256) cache می‌شوند:
-
-```
-cache/
- └── <video_hash>/
-      ├── metadata.json
-      ├── poses.npz
-      ├── features.npz
-      └── strokes.json
-```
-
-اگر ویدئو تغییر نکرده باشد، pose estimation دوباره انجام نمی‌شود.
-
----
-
-## توسعه
-
-### اجرای تست‌ها
+### مشکل: PyTorch CUDA را تشخیص نمی‌دهد
 
 ```bash
-pytest tests/
+# بررسی نسخه CUDA
+python -c "import torch; print(torch.version.cuda)"
+
+# نصب مجدد با نسخه صحیح
+pip uninstall torch torchvision torchaudio
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
 ```
 
-### سبک کدنویسی
+### مشکل: MMPose نصب نمی‌شود
 
-- از راهنمای PEP 8 پیروی کنید
-- تا جایی که ممکن است از type hints استفاده کنید
+```bash
+# اطمینان از سازگاری نسخه‌ها
+pip show mmcv
+pip show torch
 
-### افزودن قابلیت‌های جدید
+# نصب با نسخه خاص
+pip install mmcv==2.1.0 -f https://download.openmmlab.com/mmcv/dist/cu118/torch2.1/index.html
+```
 
-1. شاخه feature ایجاد کنید
-2. تغییرات را پیاده‌سازی کنید
-3. تست اضافه کنید
-4. مستندات را به‌روز کنید
-5. Pull request ارسال کنید
+### مشکل: LM Studio متصل نمی‌شود
+
+1. بررسی روشن بودن LM Studio
+2. بررسی شروع سرور در LM Studio
+3. بررسی پورت (پیش‌فرض: 1234)
+4. تست با curl:
+   ```bash
+   curl http://localhost:1234/v1/models
+   ```
+
+### مشکل: خطای حافظه GPU (OOM)
+
+1. بستن سایر برنامه‌های گرافیکی
+2. کاهش Context Length در LM Studio به 2048
+3. استفاده از نسخه Quantized سبک‌تر (Q3_K_S)
+4. کاهش resolution ویدئو ورودی
+
+### مشکل: شخص تشخیص داده نمی‌شود
+
+1. اطمینان از نور کافی در ویدئو
+2. قرار گرفتن بازیکن در مرکز کادر
+3. عدم وجود افراد متعدد در کادر
+4. کاهش Confidence Threshold در تنظیمات
+
+### مشکل: خطای FFmpeg
+
+```bash
+# نصب مجدد FFmpeg
+choco uninstall ffmpeg
+choco install ffmpeg
+
+# یا دانلود دستی از ffmpeg.org
+```
 
 ---
 
-## پشتیبانی
+## پشتیبانی و مستندات بیشتر
 
-برای مشکلات و سوالات، به مستندات در پوشه `docs/` مراجعه کنید یا با تیم توسعه تماس بگیرید.
-
----
-
-## تاریخچه نسخه
-
-### v1.0.0 - انتشار اولیه
-- تحلیل ویدئوی تک‌دوربینه
-- تخمین Pose با RTMPose
-- استخراج ویژگی‌های بیومکانیکی
-- مقایسه مبتنی بر DTW
-- مربیگری محلی با Qwen3.5-9B
-- رابط کاربری PyQt6
+- **مستندات فنی**: `docs/TECHNICAL_REQUIREMENTS.md`
+- **کانفیگ نمونه**: `config.yaml`
+- **تست‌ها**: `tests/`
 
 ---
 
-## مجوز
+## نکات امنیتی
 
-[مجوز خود را اینجا مشخص کنید]
+✅ تمام پردازش‌ها محلی انجام می‌شود  
+✅ ویدئوها هرگز دستگاه را ترک نمی‌کنند  
+✅ هیچ داده‌ای به سرور خارجی ارسال نمی‌شود  
+✅ LLM کاملاً آفلاین اجرا می‌شود  
 
 ---
 
-**© ۱۴۰۳ پروژه TTana**
+## به‌روزرسانی
+
+```bash
+# دریافت آخرین نسخه کد
+git pull origin main
+
+# به‌روزرسانی dependencies
+pip install -r requirements.txt --upgrade
+
+# بررسی نسخه جدید مدل‌ها در LM Studio
+```
+
+---
+
+## حذف نصب
+
+```bash
+# غیرفعال‌سازی محیط مجازی
+deactivate
+
+# حذف پوشه venv
+rmdir /s venv  # Windows
+rm -rf venv  # Linux/Mac
+
+# حذف مدل‌ها از LM Studio (در صورت نیاز)
+```
+
+---
+
+**تهیه شده توسط تیم توسعه TTana**  
+**آخرین به‌روزرسانی: 2024**
