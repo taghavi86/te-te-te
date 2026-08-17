@@ -9,12 +9,12 @@ from typing import Optional, Dict, Any
 
 from PyQt6.QtWidgets import (
     QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QTabWidget, QAction, QMenuBar, QMenu,
+    QTabWidget, QMenuBar, QMenu,
     QStatusBar, QLabel, QPushButton, QFileDialog,
     QSplitter, QFrame, QToolBar, QDialog, QDialogButtonBox
 )
 from PyQt6.QtCore import Qt, QThread, pyqtSignal, QSize, QTimer
-from PyQt6.QtGui import QIcon, QFont, QActionGroup
+from PyQt6.QtGui import QIcon, QFont, QAction, QActionGroup
 
 from app.core.config import ConfigModel
 
