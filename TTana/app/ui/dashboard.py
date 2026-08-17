@@ -216,7 +216,11 @@ class DashboardWidget(QWidget):
     
     def _update_analyze_button(self):
         """Update analyze button state based on video selection."""
-        both_selected = self.user_video_path and self.reference_video_path
+        # Ensure button exists before updating
+        if not hasattr(self, 'analyze_btn') or self.analyze_btn is None:
+            return
+            
+        both_selected = bool(self.user_video_path and self.reference_video_path)
         self.analyze_btn.setEnabled(both_selected)
         
         if both_selected:
@@ -227,8 +231,12 @@ class DashboardWidget(QWidget):
         if not (self.user_video_path and self.reference_video_path):
             return
         
-        self.analyze_btn.setEnabled(False)
-        self.stop_btn.setEnabled(True)
+        # Ensure buttons exist before updating
+        if hasattr(self, 'analyze_btn') and self.analyze_btn:
+            self.analyze_btn.setEnabled(False)
+        if hasattr(self, 'stop_btn') and self.stop_btn:
+            self.stop_btn.setEnabled(True)
+            
         self.progress_bar.setValue(0)
         self.progress_bar.setFormat("%p% - Initializing...")
         
@@ -242,8 +250,12 @@ class DashboardWidget(QWidget):
     
     def _stop_analysis(self):
         """Stop analysis pipeline."""
-        self.stop_btn.setEnabled(False)
-        self.analyze_btn.setEnabled(True)
+        # Ensure buttons exist before updating
+        if hasattr(self, 'stop_btn') and self.stop_btn:
+            self.stop_btn.setEnabled(False)
+        if hasattr(self, 'analyze_btn') and self.analyze_btn:
+            self.analyze_btn.setEnabled(True)
+            
         self.progress_bar.setFormat("%p% - Stopped")
         self.status_text.append("\n⚠️ Analysis stopped by user.\n")
     
